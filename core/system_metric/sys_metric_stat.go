@@ -50,6 +50,7 @@ var (
 
 	ssStopChan = make(chan struct{})
 
+	once               sync.Once
 	cpuRatioGauge      metric_exporter.Gauge
 	processMemoryGauge metric_exporter.Gauge
 )
@@ -70,19 +71,21 @@ func init() {
 }
 
 func Init() {
-	cpuRatioGauge = metric_exporter.NewGauge(
-		"cpu_ratio",
-		"Process cpu ratio",
-		[]string{},
-	)
-	metric_exporter.Register(cpuRatioGauge)
+	once.Do(func() {
+		cpuRatioGauge = metric_exporter.NewGauge(
+			"cpu_ratio",
+			"Process cpu ratio",
+			[]string{},
+		)
+		metric_exporter.Register(cpuRatioGauge)
 
-	processMemoryGauge = metric_exporter.NewGauge(
-		"process_memory_bytes",
-		"Process memory in bytes",
-		[]string{},
-	)
-	metric_exporter.Register(processMemoryGauge)
+		processMemoryGauge = metric_exporter.NewGauge(
+			"process_memory_bytes",
+			"Process memory in bytes",
+			[]string{},
+		)
+		metric_exporter.Register(processMemoryGauge)
+	})
 }
 
 // getMemoryStat returns the current machine's memory statistic
