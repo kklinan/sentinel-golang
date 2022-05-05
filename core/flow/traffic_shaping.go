@@ -15,26 +15,21 @@
 package flow
 
 import (
-	"sync"
-
 	"github.com/alibaba/sentinel-golang/core/base"
 	metric_exporter "github.com/alibaba/sentinel-golang/exporter/metric"
 )
 
 var (
-	once                       sync.Once
 	resourceFlowThresholdGauge metric_exporter.Gauge
 )
 
 func Init() {
-	once.Do(func() {
-		resourceFlowThresholdGauge = metric_exporter.NewGauge(
-			"resource_flow_threshold",
-			"Resource flow threshold",
-			[]string{"resource"},
-		)
-		metric_exporter.Register(resourceFlowThresholdGauge)
-	})
+	resourceFlowThresholdGauge = metric_exporter.NewGauge(
+		"resource_flow_threshold",
+		"Resource flow threshold",
+		[]string{"resource"},
+	)
+	metric_exporter.Register(resourceFlowThresholdGauge)
 }
 
 // TrafficShapingCalculator calculates the actual traffic shaping threshold
